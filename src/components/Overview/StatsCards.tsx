@@ -100,8 +100,12 @@ export function StatsCards({ stats, yearlyStats }: StatsCardsProps) {
         <StatCard
           icon={Calendar}
           label="Time Span"
-          value={`${new Date(stats.dateRange.start).getFullYear()} - ${new Date(stats.dateRange.end).getFullYear()}`}
-          subValue={`${stats.dateRange.start} to ${stats.dateRange.end}`}
+          value={stats.dateRange.start !== 'N/A' 
+            ? `${new Date(stats.dateRange.start).getFullYear()} - ${new Date(stats.dateRange.end).getFullYear()}`
+            : 'N/A'}
+          subValue={stats.dateRange.start !== 'N/A' 
+            ? `${stats.dateRange.start} to ${stats.dateRange.end}`
+            : undefined}
           color="text-primary"
           delay={400}
         />

@@ -18,6 +18,19 @@ export function filterValidTracks(records: SpotifyStreamingRecord[]): SpotifyStr
 }
 
 export function calculateOverviewStats(records: SpotifyStreamingRecord[]): OverviewStats {
+  // Handle empty records
+  if (records.length === 0) {
+    return {
+      totalListeningMs: 0,
+      totalTracks: 0,
+      uniqueTracks: 0,
+      uniqueArtists: 0,
+      uniqueAlbums: 0,
+      dateRange: { start: 'N/A', end: 'N/A' },
+      averageDailyMs: 0,
+    };
+  }
+
   const validRecords = filterValidTracks(records);
   
   const totalListeningMs = validRecords.reduce((sum, r) => sum + r.ms_played, 0);

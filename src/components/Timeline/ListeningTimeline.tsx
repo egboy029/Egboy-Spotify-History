@@ -32,9 +32,13 @@ export function ListeningTimeline({ monthlyData, hourlyData }: ListeningTimeline
     rawHour: h.hour,
   }));
 
-  // Find peak listening time
-  const peakHour = hourlyData.reduce((max, h) => h.totalMs > max.totalMs ? h : max, hourlyData[0]);
-  const peakMonth = monthlyData.reduce((max, m) => m.totalMs > max.totalMs ? m : max, monthlyData[0]);
+  // Find peak listening time (with safety checks for empty arrays)
+  const peakHour = hourlyData.length > 0 
+    ? hourlyData.reduce((max, h) => h.totalMs > max.totalMs ? h : max, hourlyData[0])
+    : null;
+  const peakMonth = monthlyData.length > 0 
+    ? monthlyData.reduce((max, m) => m.totalMs > max.totalMs ? m : max, monthlyData[0])
+    : null;
 
   return (
     <div className="space-y-6">
@@ -42,7 +46,7 @@ export function ListeningTimeline({ monthlyData, hourlyData }: ListeningTimeline
       <Card className="animate-fade-in">
         <CardHeader 
           title="Monthly Listening Trend" 
-          subtitle={`Peak month: ${peakMonth?.month || 'N/A'} with ${msToHours(peakMonth?.totalMs || 0)} hours`}
+          subtitle={peakMonth ? `Peak month: ${peakMonth.month} with ${msToHours(peakMonth.totalMs)} hours` : 'No data available'}
         />
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
@@ -106,7 +110,7 @@ export function ListeningTimeline({ monthlyData, hourlyData }: ListeningTimeline
       <Card className="animate-fade-in delay-100">
         <CardHeader 
           title="Listening by Hour of Day" 
-          subtitle={`Peak listening time: ${formatHour(peakHour?.hour || 0)}`}
+          subtitle={peakHour ? `Peak listening time: ${formatHour(peakHour.hour)}` : 'No data available'}
         />
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
