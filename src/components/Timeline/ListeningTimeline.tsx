@@ -84,9 +84,9 @@ export function ListeningTimeline({ monthlyData, hourlyData }: ListeningTimeline
                   boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                 }}
                 labelStyle={{ color: 'white', fontWeight: 600 }}
-                formatter={(value: number, name: string) => {
+                formatter={(value, name) => {
                   if (name === 'hours') return [`${value} hours`, 'Listening Time'];
-                  if (name === 'tracks') return [formatNumber(value), 'Tracks Played'];
+                  if (name === 'tracks') return [formatNumber(value as number), 'Tracks Played'];
                   return [value, name];
                 }}
               />
@@ -133,9 +133,9 @@ export function ListeningTimeline({ monthlyData, hourlyData }: ListeningTimeline
                   boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                 }}
                 labelStyle={{ color: 'white', fontWeight: 600 }}
-                formatter={(value: number, name: string) => {
+                formatter={(value, name) => {
                   if (name === 'hours') return [`${value} hours`, 'Total Time'];
-                  if (name === 'tracks') return [formatNumber(value), 'Tracks'];
+                  if (name === 'tracks') return [formatNumber(value as number), 'Tracks'];
                   return [value, name];
                 }}
               />

@@ -1,7 +1,7 @@
 import { Clock, Music, Users, Disc3, Calendar, TrendingUp } from 'lucide-react';
 import { Card } from '../ui/Card';
 import type { OverviewStats, YearlyStats } from '../../types/spotify';
-import { formatDuration, formatNumber, msToHours } from '../../utils/dataProcessing';
+import { formatNumber, msToHours } from '../../utils/dataProcessing';
 import {
   AreaChart,
   Area,
@@ -140,7 +140,7 @@ export function StatsCards({ stats, yearlyStats }: StatsCardsProps) {
                 }}
                 labelStyle={{ color: 'white', fontWeight: 600 }}
                 itemStyle={{ color: '#8b5cf6' }}
-                formatter={(value: number) => [`${value} hours`, 'Listening Time']}
+                formatter={(value) => [`${value} hours`, 'Listening Time']}
               />
               <Area
                 type="monotone"

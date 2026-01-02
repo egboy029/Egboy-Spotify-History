@@ -13,49 +13,58 @@ import {
   filterByYear,
 } from '../utils/dataProcessing';
 
-// Import all JSON files
-import data0 from '../data/Streaming_History_Audio_2021-2022_0.json';
-import data1 from '../data/Streaming_History_Audio_2022_1.json';
-import data2 from '../data/Streaming_History_Audio_2022_2.json';
-import data3 from '../data/Streaming_History_Audio_2022_3.json';
-import data4 from '../data/Streaming_History_Audio_2022-2023_4.json';
-import data5 from '../data/Streaming_History_Audio_2023_5.json';
-import data6 from '../data/Streaming_History_Audio_2023-2024_6.json';
-import data7 from '../data/Streaming_History_Audio_2024_7.json';
-import data8 from '../data/Streaming_History_Audio_2024_8.json';
-import data9 from '../data/Streaming_History_Audio_2024_9.json';
-import data10 from '../data/Streaming_History_Audio_2024-2025_10.json';
-import data11 from '../data/Streaming_History_Audio_2025_11.json';
-import data12 from '../data/Streaming_History_Audio_2025_12.json';
-import data13 from '../data/Streaming_History_Audio_2025_13.json';
-import data14 from '../data/Streaming_History_Audio_2025_14.json';
+// List of data files to fetch
+const DATA_FILES = [
+  'Streaming_History_Audio_2021-2022_0.json',
+  'Streaming_History_Audio_2022_1.json',
+  'Streaming_History_Audio_2022_2.json',
+  'Streaming_History_Audio_2022_3.json',
+  'Streaming_History_Audio_2022-2023_4.json',
+  'Streaming_History_Audio_2023_5.json',
+  'Streaming_History_Audio_2023-2024_6.json',
+  'Streaming_History_Audio_2024_7.json',
+  'Streaming_History_Audio_2024_8.json',
+  'Streaming_History_Audio_2024_9.json',
+  'Streaming_History_Audio_2024-2025_10.json',
+  'Streaming_History_Audio_2025_11.json',
+  'Streaming_History_Audio_2025_12.json',
+  'Streaming_History_Audio_2025_13.json',
+  'Streaming_History_Audio_2025_14.json',
+];
 
 export function useSpotifyData() {
   const [isLoading, setIsLoading] = useState(true);
+  const [allRecords, setAllRecords] = useState<SpotifyStreamingRecord[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
 
-  // Merge all data
-  const allRecords = useMemo<SpotifyStreamingRecord[]>(() => {
-    const merged = [
-      ...data0,
-      ...data1,
-      ...data2,
-      ...data3,
-      ...data4,
-      ...data5,
-      ...data6,
-      ...data7,
-      ...data8,
-      ...data9,
-      ...data10,
-      ...data11,
-      ...data12,
-      ...data13,
-      ...data14,
-    ] as SpotifyStreamingRecord[];
-    
-    // Sort by timestamp
-    return merged.sort((a, b) => new Date(a.ts).getTime() - new Date(b.ts).getTime());
+  // Load data on mount
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const promises = DATA_FILES.map(async (file) => {
+          const response = await fetch(`/data/${file}`);
+          if (!response.ok) {
+            console.warn(`Failed to load ${file}`);
+            return [];
+          }
+          return response.json();
+        });
+
+        const results = await Promise.all(promises);
+        const merged = results.flat() as SpotifyStreamingRecord[];
+        
+        // Sort by timestamp
+        merged.sort((a, b) => new Date(a.ts).getTime() - new Date(b.ts).getTime());
+        
+        setAllRecords(merged);
+      } catch (error) {
+        console.error('Error loading Spotify data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadData();
   }, []);
 
   // Filter records by selected year
@@ -77,12 +86,6 @@ export function useSpotifyData() {
   const yearlyStats = useMemo(() => getYearlyStats(allRecords), [allRecords]);
   const availableYears = useMemo(() => getAvailableYears(allRecords), [allRecords]);
 
-  useEffect(() => {
-    // Simulate loading for smooth transition
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
-
   return {
     isLoading,
     allRecords,
@@ -100,4 +103,3 @@ export function useSpotifyData() {
     availableYears,
   };
 }
-

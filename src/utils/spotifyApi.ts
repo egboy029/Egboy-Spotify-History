@@ -76,7 +76,7 @@ async function getAccessToken(): Promise<string> {
     expires_at: Date.now() + (data.expires_in * 1000) - 60000, // Refresh 1 minute before expiry
   };
 
-  return cachedToken.access_token;
+  return cachedToken!.access_token;
 }
 
 /**
